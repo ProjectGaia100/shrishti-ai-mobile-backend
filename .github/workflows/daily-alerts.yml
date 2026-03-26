@@ -2,33 +2,44 @@ name: Daily Mobile Alerts
 
 on:
   schedule:
-    # Runs every day at 6:00 AM UTC (adjust as needed)
     - cron: '0 6 * * *'
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   trigger-alerts:
     runs-on: ubuntu-latest
     steps:
-      - name: Wake up HF Space
+      - name: Wait for HF Space to be ready
         run: |
-          for i in 1 2 3 4 5; do
-            echo "Attempt $i: waking up space..."
-            curl -sf https://shrishtiai-shrishti-ai-mobile-backend.hf.space/health && break
-            sleep 30
+          for i in $(seq 1 10); do
+            echo "Attempt $i/10: checking space..."
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://shrishtiai-shrishti-ai-mobile-backend.hf.space/health)
+            echo "  HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "Space is ready!"
+              break
+            fi
+            echo "  Not ready, waiting 15s..."
+            sleep 15
           done
 
       - name: Trigger alert scheduler
         run: |
-          for i in 1 2 3; do
-            echo "Attempt $i: triggering alerts..."
-            RESPONSE=$(curl -sf -X POST \
+          for i in $(seq 1 5); do
+            echo "Attempt $i/5: triggering alerts..."
+            HTTP_CODE=$(curl -s -o /tmp/response.txt -w "%{http_code}" -X POST \
               -H "Content-Type: application/json" \
               -H "X-Scheduler-Secret: ${{ secrets.SCHEDULER_SECRET }}" \
-              https://shrishtiai-shrishti-ai-mobile-backend.hf.space/api/scheduler/run-mobile-alerts) && \
-              echo "$RESPONSE" && exit 0
-            echo "Failed, retrying in 30s..."
-            sleep 30
+              https://shrishtiai-shrishti-ai-mobile-backend.hf.space/api/scheduler/run-mobile-alerts)
+            echo "  HTTP $HTTP_CODE"
+            cat /tmp/response.txt
+            echo ""
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Success!"
+              exit 0
+            fi
+            echo "  Failed, waiting 20s..."
+            sleep 20
           done
           echo "All attempts failed"
           exit 1
