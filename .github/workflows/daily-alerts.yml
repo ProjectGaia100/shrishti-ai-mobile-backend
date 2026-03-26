@@ -1,0 +1,18 @@
+name: Daily Mobile Alerts
+
+on:
+  schedule:
+    # Runs every day at 6:00 AM UTC (adjust as needed)
+    - cron: '0 6 * * *'
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+jobs:
+  trigger-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger alert scheduler
+        run: |
+          curl -sf -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Scheduler-Secret: ${{ secrets.SCHEDULER_SECRET }}" \
+            https://shrishtiai-shrishti-ai-mobile-backend.hf.space/api/scheduler/run-mobile-alerts
