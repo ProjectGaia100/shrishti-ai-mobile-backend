@@ -43,6 +43,7 @@ def _ensure_models_downloaded(model_root: Path):
         repo_type="model",
         local_dir=str(model_root),
         token=config.HF_TOKEN,
+        allow_patterns=["hazardguard/**"],
         ignore_patterns=["*.git*", ".gitattributes"],
     )
 

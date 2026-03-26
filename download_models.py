@@ -22,6 +22,7 @@ def main():
         repo_type="model",
         local_dir=str(local_dir),
         token=token,
+        allow_patterns=["hazardguard/**"],
         ignore_patterns=["*.git*", ".gitattributes"],
     )
     print("Models downloaded successfully.")
