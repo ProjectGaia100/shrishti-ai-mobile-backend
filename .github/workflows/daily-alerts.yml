@@ -10,9 +10,25 @@ jobs:
   trigger-alerts:
     runs-on: ubuntu-latest
     steps:
+      - name: Wake up HF Space
+        run: |
+          for i in 1 2 3 4 5; do
+            echo "Attempt $i: waking up space..."
+            curl -sf https://shrishtiai-shrishti-ai-mobile-backend.hf.space/health && break
+            sleep 30
+          done
+
       - name: Trigger alert scheduler
         run: |
-          curl -sf -X POST \
-            -H "Content-Type: application/json" \
-            -H "X-Scheduler-Secret: ${{ secrets.SCHEDULER_SECRET }}" \
-            https://shrishtiai-shrishti-ai-mobile-backend.hf.space/api/scheduler/run-mobile-alerts
+          for i in 1 2 3; do
+            echo "Attempt $i: triggering alerts..."
+            RESPONSE=$(curl -sf -X POST \
+              -H "Content-Type: application/json" \
+              -H "X-Scheduler-Secret: ${{ secrets.SCHEDULER_SECRET }}" \
+              https://shrishtiai-shrishti-ai-mobile-backend.hf.space/api/scheduler/run-mobile-alerts) && \
+              echo "$RESPONSE" && exit 0
+            echo "Failed, retrying in 30s..."
+            sleep 30
+          done
+          echo "All attempts failed"
+          exit 1
