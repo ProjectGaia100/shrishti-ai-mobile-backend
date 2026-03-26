@@ -1,3 +1,14 @@
+---
+title: Mobile Backend
+emoji: 🌍
+colorFrom: orange
+colorTo: yellow
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
+
 # Mobile Backend (HF2)
 
 This is an isolated backend for the mobile app only.
@@ -55,3 +66,16 @@ Notes:
 - Space SDK: `Docker`
 - Exposed port: `7860`
 - Secrets: set the required variables above in Space settings.
+
+## GitHub CI/CD (repo -> HF2)
+
+This repo includes a GitHub Actions workflow at `.github/workflows/deploy-hf.yml`.
+
+On every push to `main`, it deploys this repo to your HF2 Space.
+
+Required GitHub repository secrets:
+
+- `HF_TOKEN`: Hugging Face write token
+- `HF_SPACE_REPO`: Space slug, for example `shrishtiai/ShrishtiAI-mobile-backend`
+
+You can also trigger deployment manually with `workflow_dispatch`.
