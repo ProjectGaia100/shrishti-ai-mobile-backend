@@ -129,6 +129,7 @@ def root():
             "endpoints": {
                 "health": "/health",
                 "predict": "/api/mobile/predict",
+                "diagnostics": "/api/mobile/diagnostics",
                 "scheduler_run": "/api/scheduler/run-mobile-alerts",
             },
         }
@@ -138,12 +139,37 @@ def root():
 @app.get("/health")
 def health():
     configured = bool(config.SUPABASE_URL and config.SUPABASE_SERVICE_ROLE_KEY)
+    service_status = hazardguard_service.get_service_status()
     return jsonify(
         {
             "success": True,
             "service": "mobile-backend-hf2",
             "configured": configured,
             "model_predict_url_set": bool(config.MOBILE_HF_PREDICTION_URL),
+            "hazardguard": {
+                "service_status": service_status.get("service_status"),
+                "model_loaded": service_status.get("model_loaded"),
+                "total_requests": (service_status.get("statistics") or {}).get("total_requests", 0),
+                "failed_predictions": (service_status.get("statistics") or {}).get("failed_predictions", 0),
+                "weather_failures": (service_status.get("statistics") or {}).get("weather_fetch_failures", 0),
+                "feature_failures": (service_status.get("statistics") or {}).get("feature_engineering_failures", 0),
+                "raster_failures": (service_status.get("statistics") or {}).get("raster_fetch_failures", 0),
+            },
+        }
+    )
+
+
+@app.get("/api/mobile/diagnostics")
+def mobile_diagnostics():
+    if not _authorize_scheduler():
+        return _json_error("Invalid scheduler secret", 401)
+
+    return jsonify(
+        {
+            "success": True,
+            "service": "mobile-backend-hf2",
+            "hazardguard_status": hazardguard_service.get_service_status(),
+            "scheduler_runtime": scheduler_service.get_runtime_status(),
         }
     )
 
@@ -169,7 +195,12 @@ def mobile_predict():
         "lon": lon,
     }
 
-    outcome = scheduler_service.predict_for_location_with_retry(location)
+    try:
+        outcome = scheduler_service.predict_for_location_with_retry(location)
+    except Exception as exc:
+        logger.exception("/api/mobile/predict failed with unhandled exception")
+        return jsonify({"success": False, "error": f"Unhandled predict exception: {exc}"}), 500
+
     if not outcome.success:
         return jsonify({"success": False, "error": outcome.error}), 502
 
