@@ -59,11 +59,13 @@ class MobileAlertSchedulerService:
             return {"success": False, "status": "skipped", "message": "Run already in progress"}
 
         started_at = datetime.now(timezone.utc)
+        run_timestamp_iso = started_at.isoformat()
         run_id = None
         total_locations = 0
         predictions_made = 0
         alerts_created = 0
         errors_count = 0
+        per_user_stats: Dict[str, Dict[str, int]] = {}
 
         try:
             if self._has_recent_running_run():
@@ -75,23 +77,54 @@ class MobileAlertSchedulerService:
             total_locations = len(locations)
             self._update_prediction_run_row(run_id, total_locations=total_locations)
 
+            for location in locations:
+                user_id = str(location.get("user_id") or "").strip()
+                if not user_id:
+                    continue
+                stats = per_user_stats.setdefault(
+                    user_id,
+                    {
+                        "total_locations": 0,
+                        "predictions_made": 0,
+                        "alerts_created": 0,
+                        "errors_count": 0,
+                    },
+                )
+                stats["total_locations"] += 1
+
             for batch_start in range(0, total_locations, self.batch_size):
                 batch = locations[batch_start : batch_start + self.batch_size]
                 for location in batch:
+                    user_id = str(location.get("user_id") or "").strip()
+                    if user_id:
+                        stats = per_user_stats.setdefault(
+                            user_id,
+                            {
+                                "total_locations": 0,
+                                "predictions_made": 0,
+                                "alerts_created": 0,
+                                "errors_count": 0,
+                            },
+                        )
+                        stats["predictions_made"] += 1
+
                     predictions_made += 1
                     outcome = self.predict_for_location_with_retry(location)
                     if not outcome.success:
                         errors_count += 1
+                        if user_id:
+                            per_user_stats[user_id]["errors_count"] += 1
                         continue
 
                     if outcome.risk_score < self.risk_threshold:
                         continue
 
-                    user_id = location.get("user_id")
                     location_id = location.get("id")
                     disaster_type = self._normalize_disaster_type(outcome.disaster_type)
                     if not user_id or not location_id:
                         errors_count += 1
+                        if user_id:
+                            per_user_stats[user_id]["errors_count"] += 1
                         continue
 
                     if self._alert_exists_recently(user_id, location_id, disaster_type):
@@ -107,6 +140,7 @@ class MobileAlertSchedulerService:
                             prediction_timestamp=outcome.prediction_timestamp,
                         )
                     alerts_created += 1
+                    per_user_stats[user_id]["alerts_created"] += 1
 
             duration = (datetime.now(timezone.utc) - started_at).total_seconds()
             self._update_prediction_run_row(
@@ -114,6 +148,12 @@ class MobileAlertSchedulerService:
                 predictions_made=predictions_made,
                 alerts_created=alerts_created,
                 errors_count=errors_count,
+                duration_seconds=duration,
+                status="completed",
+            )
+            self._insert_user_prediction_runs(
+                run_timestamp=run_timestamp_iso,
+                per_user_stats=per_user_stats,
                 duration_seconds=duration,
                 status="completed",
             )
@@ -145,6 +185,12 @@ class MobileAlertSchedulerService:
                     duration_seconds=duration,
                     status="failed",
                 )
+            self._insert_user_prediction_runs(
+                run_timestamp=run_timestamp_iso,
+                per_user_stats=per_user_stats,
+                duration_seconds=duration,
+                status="failed",
+            )
             return {
                 "success": False,
                 "status": "failed",
@@ -363,6 +409,31 @@ class MobileAlertSchedulerService:
                 "prediction_timestamp": prediction_timestamp,
             }
         ).execute()
+
+    def _insert_user_prediction_runs(
+        self,
+        run_timestamp: str,
+        per_user_stats: Dict[str, Dict[str, int]],
+        duration_seconds: float,
+        status: str,
+    ) -> None:
+        rows: List[Dict[str, Any]] = []
+        for user_id, stats in per_user_stats.items():
+            rows.append(
+                {
+                    "user_id": user_id,
+                    "run_timestamp": run_timestamp,
+                    "total_locations": int(stats.get("total_locations", 0)),
+                    "predictions_made": int(stats.get("predictions_made", 0)),
+                    "alerts_created": int(stats.get("alerts_created", 0)),
+                    "errors_count": int(stats.get("errors_count", 0)),
+                    "duration_seconds": round(float(duration_seconds), 2),
+                    "status": status,
+                }
+            )
+
+        if rows:
+            self.supabase.table("prediction_runs").insert(rows).execute()
 
     def _create_prediction_run_row(self) -> str:
         response = (
