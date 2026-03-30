@@ -567,6 +567,21 @@ class HazardGuardPredictionService:
             # Calculate success rates
             total_requests = self.service_stats['total_requests']
             success_rate = (self.service_stats['successful_predictions'] / total_requests * 100) if total_requests > 0 else 0
+
+            weather_provider_details = {
+                'provider': 'unknown',
+                'fallback_provider': None,
+                'last_provider': None,
+                'last_error': ''
+            }
+            if hasattr(self.weather_service, 'get_service_status'):
+                weather_status = self.weather_service.get_service_status() or {}
+                weather_provider_details = {
+                    'provider': weather_status.get('service', 'unknown'),
+                    'fallback_provider': weather_status.get('fallback_provider'),
+                    'last_provider': weather_status.get('last_provider'),
+                    'last_error': weather_status.get('last_error', '')
+                }
             
             return {
                 'service_status': 'ready' if self.service_stats['model_loaded'] else 'not_initialized',
@@ -586,7 +601,7 @@ class HazardGuardPredictionService:
                     'average_processing_time_seconds': self.service_stats['average_processing_time']
                 },
                 'service_dependencies': {
-                    'weather_service': 'NASA_POWER',
+                    'weather_service': weather_provider_details,
                     'feature_service': 'FeatureEngineering',
                     'raster_service': 'RasterData',
                     'prediction_model': 'XGBoost_Binary_Classifier'
