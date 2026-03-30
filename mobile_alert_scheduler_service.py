@@ -243,7 +243,7 @@ class MobileAlertSchedulerService:
         except Exception:
             parsed_conf = parsed_risk
 
-        if parsed_risk <= 0:
+        if risk_score is None:
             return PredictionOutcome(success=False, error="HazardGuard response missing disaster probability")
 
         return PredictionOutcome(
@@ -302,7 +302,7 @@ class MobileAlertSchedulerService:
         except Exception:
             parsed_confidence = parsed_risk
 
-        if parsed_risk <= 0:
+        if risk_score is None:
             return PredictionOutcome(success=False, error="Missing risk score in model response")
 
         return PredictionOutcome(
