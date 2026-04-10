@@ -340,9 +340,10 @@ class HazardGuardPredictionService:
             logger.info(f"[PREDICTION] HazardGuard prediction for location ({latitude}, {longitude})")
             
             # Calculate date range for weather data
+            # reference_date = END of the 60-day weather window (matches web backend).
             if reference_date:
                 try:
-                    ref_date = datetime.strptime(reference_date, '%Y-%m-%d')
+                    end_ref = datetime.strptime(reference_date, '%Y-%m-%d')
                 except ValueError:
                     return {
                         'success': False,
@@ -351,13 +352,12 @@ class HazardGuardPredictionService:
                         'processing_time_seconds': (datetime.now() - start_time).total_seconds()
                     }
             else:
-                # Keep end_date at least 7 days behind "now" because WeatherRequest
-                # enforces NASA lag safety (disaster_date must not be too recent).
-                # With a 60-day window (ref_date + 59), this means ref_date = now - 66 days.
-                ref_date = datetime.now() - timedelta(days=66)
-            
-            start_date = ref_date.strftime('%Y-%m-%d')
-            end_date = (ref_date + timedelta(days=59)).strftime('%Y-%m-%d')  # 60 days total
+                # Keep end_date at least 7 days behind "now" to ensure NASA POWER data
+                # is available (matches web backend logic exactly).
+                end_ref = datetime.now() - timedelta(days=7)
+
+            end_date = end_ref.strftime('%Y-%m-%d')
+            start_date = (end_ref - timedelta(days=59)).strftime('%Y-%m-%d')  # 60 days total
             
             logger.info(f"   [DATE_RANGE] Using weather data from {start_date} to {end_date}")
             
