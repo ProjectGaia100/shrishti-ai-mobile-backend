@@ -1,6 +1,7 @@
 import hmac
 import logging
 import os
+import time
 from pathlib import Path
 from typing import Any, Dict
 
@@ -15,6 +16,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 config = AppConfig.from_env()
+DATASET_SYNC_STATUS: Dict[str, Any] = {}
 
 
 def _resolve_model_root() -> Path:
@@ -48,9 +50,135 @@ def _ensure_models_downloaded(model_root: Path):
     )
 
 
+def _setup_hf_dataset_paths() -> Dict[str, Any]:
+    started = time.perf_counter()
+    repo_id = (config.DATASET_REPO_ID or "").strip()
+    status: Dict[str, Any] = {
+        "enabled": bool(repo_id),
+        "repo_id": repo_id,
+        "token_configured": bool((config.HF_TOKEN or "").strip()),
+        "local_dir": "",
+        "snapshot_dir": "",
+        "success": False,
+        "assigned_raster_paths": 0,
+        "total_expected_rasters": 9,
+        "missing_rasters": [],
+        "state_data_root": "",
+        "state_data_exists": False,
+        "raster_files": {},
+        "message": "",
+    }
+
+    if not repo_id:
+        logger.info("DATASET_REPO_ID is not set, using existing raster path configuration")
+        status["message"] = "DATASET_REPO_ID not set"
+        status["duration_seconds"] = round(time.perf_counter() - started, 3)
+        return status
+
+    if config.DATASET_LOCAL_DIR:
+        local_dir = Path(config.DATASET_LOCAL_DIR).resolve()
+    else:
+        local_dir = Path("/tmp/shrishti_mobile_data") if Path("/tmp").is_dir() else Path(__file__).resolve().parent / "hf_data"
+
+    status["local_dir"] = str(local_dir)
+    logger.info("Syncing dataset %s into %s", repo_id, local_dir)
+    logger.info("Dataset sync filters: %s", ["final_lookup_tables/*.tif", "state_data/**"])
+
+    try:
+        dataset_dir = snapshot_download(
+            repo_id=repo_id,
+            repo_type="dataset",
+            local_dir=str(local_dir),
+            allow_patterns=["final_lookup_tables/*.tif", "state_data/**"],
+            token=(config.HF_TOKEN or "").strip() or None,
+            local_dir_use_symlinks=False,
+        )
+    except Exception as exc:
+        logger.warning("Dataset sync failed, continuing with existing raster paths: %s", exc)
+        status["message"] = f"Dataset sync failed: {exc}"
+        status["duration_seconds"] = round(time.perf_counter() - started, 3)
+        return status
+
+    dataset_root = Path(dataset_dir)
+    raster_root = dataset_root / "final_lookup_tables"
+    state_root = dataset_root / "state_data"
+    status["snapshot_dir"] = str(dataset_root)
+    status["state_data_root"] = str(state_root)
+
+    raster_env_map = {
+        "RASTER_SOIL_PATH": "soil_type.tif",
+        "RASTER_ELEVATION_PATH": "elevation.tif",
+        "RASTER_POPULATION_PATH": "population_density.tif",
+        "RASTER_LANDCOVER_PATH": "land_cover.tif",
+        "RASTER_NDVI_PATH": "ndvi.tif",
+        "RASTER_PRECIP_PATH": "annual_precip.tif",
+        "RASTER_TEMP_PATH": "mean_annual_temp.tif",
+        "RASTER_WIND_PATH": "wind_speed.tif",
+        "RASTER_IMPERVIOUS_PATH": "impervious_surface.tif",
+    }
+
+    assigned = 0
+    missing = []
+    for env_key, filename in raster_env_map.items():
+        raster_path = raster_root / filename
+        exists = raster_path.exists()
+        size_mb = round(raster_path.stat().st_size / (1024 * 1024), 2) if exists else 0
+        status["raster_files"][filename] = {
+            "path": str(raster_path),
+            "exists": exists,
+            "size_mb": size_mb,
+            "env_key": env_key,
+        }
+
+        logger.info(
+            "Dataset raster check: %s -> %s | exists=%s | size_mb=%s",
+            env_key,
+            raster_path,
+            exists,
+            size_mb,
+        )
+
+        if raster_path.exists():
+            os.environ[env_key] = str(raster_path)
+            assigned += 1
+            logger.info("Assigned %s=%s", env_key, raster_path)
+        else:
+            missing.append(filename)
+
+    if state_root.exists():
+        os.environ["STATE_DATA_ROOT"] = str(state_root)
+        status["state_data_exists"] = True
+        try:
+            state_subdirs = sorted([p.name for p in state_root.iterdir() if p.is_dir()])
+        except Exception:
+            state_subdirs = []
+        status["state_subdirs"] = state_subdirs
+        logger.info(
+            "Assigned STATE_DATA_ROOT=%s | subdirs=%s",
+            state_root,
+            len(state_subdirs),
+        )
+    else:
+        logger.warning("state_data directory not found under dataset snapshot: %s", state_root)
+
+    status["success"] = True
+    status["assigned_raster_paths"] = assigned
+    status["missing_rasters"] = missing
+    status["message"] = "Dataset sync completed"
+    status["duration_seconds"] = round(time.perf_counter() - started, 3)
+
+    logger.info("Dataset sync complete, configured %s raster paths from %s", assigned, raster_root)
+    if missing:
+        logger.warning("Missing raster files after dataset sync: %s", ", ".join(missing))
+
+    return status
+
+
 def _load_hazardguard_service():
+    global DATASET_SYNC_STATUS
     model_root = _resolve_model_root()
     _ensure_models_downloaded(model_root)
+    DATASET_SYNC_STATUS = _setup_hf_dataset_paths()
     os.environ["MODEL_ROOT_PATH"] = str(model_root)
 
     from services.weather_service import NASAPowerService
@@ -146,6 +274,7 @@ def health():
             "service": "mobile-backend-hf2",
             "configured": configured,
             "model_predict_url_set": bool(config.MOBILE_HF_PREDICTION_URL),
+            "dataset_sync": DATASET_SYNC_STATUS,
             "hazardguard": {
                 "service_status": service_status.get("service_status"),
                 "model_loaded": service_status.get("model_loaded"),
@@ -168,6 +297,7 @@ def mobile_diagnostics():
         {
             "success": True,
             "service": "mobile-backend-hf2",
+            "dataset_sync": DATASET_SYNC_STATUS,
             "hazardguard_status": hazardguard_service.get_service_status(),
             "scheduler_runtime": scheduler_service.get_runtime_status(),
         }

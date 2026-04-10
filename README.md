@@ -45,6 +45,7 @@ Required secrets/environment variables:
 - `HF_TOKEN` (for downloading private model repo)
 - `MODEL_REPO_ID` (default `projectgaia/ShrishtiAI-models`)
 - `MODEL_ROOT_PATH` (optional)
+- `DATASET_REPO_ID` (default example: `shrishtiai/shrishtiai-geospatial-data`)
 - `MOBILE_CLIENT_API_KEY` (optional)
 
 Optional tuning:
@@ -52,6 +53,7 @@ Optional tuning:
 - `MOBILE_ALERT_RISK_THRESHOLD`
 - `MOBILE_ALERT_FORECAST_HOURS`
 - `MOBILE_ALERT_BATCH_SIZE`
+- `DATASET_LOCAL_DIR` (optional, where HF dataset snapshot is stored)
 - `MOBILE_HF_TIMEOUT_SECONDS`
 - `MOBILE_HF_BACKOFF_SECONDS`
 - `WEATHER_OPEN_METEO_FALLBACK` (default `true`)
@@ -63,6 +65,7 @@ Optional tuning:
 Notes:
 
 - On startup, this service downloads models if missing and initializes local HazardGuard inference.
+- If `DATASET_REPO_ID` is set, it also snapshots `final_lookup_tables/*.tif` from HF dataset and auto-wires `RASTER_*_PATH` env vars before raster services initialize.
 - `POST /api/scheduler/run-mobile-alerts` is protected by `X-Scheduler-Secret`.
 - This folder is standalone for HF2 deployment (includes vendored HazardGuard runtime modules).
 

@@ -51,30 +51,8 @@ class MobileAlertSchedulerService:
         self.batch_size = max(int(batch_size), 1)
         self.request_timeout_seconds = max(int(request_timeout_seconds), 10)
         self.retry_backoff_seconds = retry_backoff_seconds or [10, 25, 45, 90]
-        self.last_prediction_error = ""
-        self.last_prediction_error_at = ""
 
         self._run_lock = threading.Lock()
-
-    def _is_non_retryable_error(self, error_message: str) -> bool:
-        msg = (error_message or "").lower()
-        if not msg:
-            return False
-        non_retryable_markers = [
-            "service not initialized",
-            "location lat/lon missing",
-            "invalid coordinates",
-            "raster data collection failed",
-            "feature engineering failed",
-            "weather data collection failed",
-            "missing risk score",
-            "response missing disaster probability",
-            "model endpoint http 400",
-            "model endpoint http 401",
-            "model endpoint http 403",
-            "model endpoint http 404",
-        ]
-        return any(marker in msg for marker in non_retryable_markers)
 
     def run_cycle(self, dry_run: bool = False) -> Dict[str, Any]:
         if not self._run_lock.acquire(blocking=False):
@@ -136,13 +114,6 @@ class MobileAlertSchedulerService:
                         errors_count += 1
                         if user_id:
                             per_user_stats[user_id]["errors_count"] += 1
-                        logger.error(
-                            "Prediction failed user=%s location_id=%s city=%s error=%s",
-                            user_id or "unknown",
-                            str(location.get("id") or "unknown"),
-                            str(location.get("city") or "unknown"),
-                            outcome.error,
-                        )
                         continue
 
                     if outcome.risk_score < self.risk_threshold:
@@ -235,12 +206,8 @@ class MobileAlertSchedulerService:
             if outcome.success:
                 return outcome
             last_error = outcome.error or last_error
-            if self._is_non_retryable_error(last_error):
-                break
             if idx < len(self.retry_backoff_seconds) - 1:
                 time.sleep(backoff)
-        self.last_prediction_error = last_error
-        self.last_prediction_error_at = datetime.now(timezone.utc).isoformat()
         return PredictionOutcome(success=False, error=last_error)
 
     def predict_for_location(self, location: Dict[str, Any]) -> PredictionOutcome:
@@ -298,21 +265,7 @@ class MobileAlertSchedulerService:
             return PredictionOutcome(success=False, error=f"Local HazardGuard error: {exc}")
 
         if not result.get("success"):
-            base_error = str(result.get("error", "HazardGuard prediction failed"))
-            collection = result.get("data_collection") or {}
-            stage_errors: List[str] = []
-            if isinstance(collection, dict):
-                for stage in ("weather", "features", "raster"):
-                    stage_data = collection.get(stage) or {}
-                    if isinstance(stage_data, dict) and stage_data.get("success") is False:
-                        stage_msg = stage_data.get("message") or stage_data.get("error") or "failed"
-                        stage_errors.append(f"{stage}: {stage_msg}")
-
-            detailed_error = base_error
-            if stage_errors:
-                detailed_error = f"{base_error} | " + " | ".join(stage_errors)
-
-            return PredictionOutcome(success=False, error=detailed_error, raw=result)
+            return PredictionOutcome(success=False, error=result.get("error", "HazardGuard prediction failed"))
 
         prediction = result.get("prediction") or {}
         probability = prediction.get("probability") or {}
@@ -540,16 +493,3 @@ class MobileAlertSchedulerService:
             .execute()
         )
         return bool(response.data)
-
-    def get_runtime_status(self) -> Dict[str, Any]:
-        return {
-            "risk_threshold": self.risk_threshold,
-            "forecast_hours": self.forecast_hours,
-            "batch_size": self.batch_size,
-            "request_timeout_seconds": self.request_timeout_seconds,
-            "retry_backoff_seconds": self.retry_backoff_seconds,
-            "has_local_hazardguard": self.hazardguard_service is not None,
-            "model_predict_url_set": bool(self.model_predict_url),
-            "last_prediction_error": self.last_prediction_error,
-            "last_prediction_error_at": self.last_prediction_error_at,
-        }

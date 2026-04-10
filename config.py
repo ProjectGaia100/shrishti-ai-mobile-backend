@@ -38,6 +38,8 @@ class AppConfig:
     MODEL_ROOT_PATH: str
     HF_TOKEN: str
     SKIP_MODEL_DOWNLOAD: bool
+    DATASET_REPO_ID: str
+    DATASET_LOCAL_DIR: str
 
     MOBILE_HF_PREDICTION_URL: str
     MOBILE_HF_API_TOKEN: str
@@ -64,6 +66,8 @@ class AppConfig:
             MODEL_ROOT_PATH=os.getenv("MODEL_ROOT_PATH", ""),
             HF_TOKEN=os.getenv("HF_TOKEN", ""),
             SKIP_MODEL_DOWNLOAD=os.getenv("SKIP_MODEL_DOWNLOAD", "false").lower() == "true",
+            DATASET_REPO_ID=os.getenv("DATASET_REPO_ID", ""),
+            DATASET_LOCAL_DIR=os.getenv("DATASET_LOCAL_DIR", ""),
             MOBILE_HF_PREDICTION_URL=os.getenv("MOBILE_HF_PREDICTION_URL", ""),
             MOBILE_HF_API_TOKEN=os.getenv("MOBILE_HF_API_TOKEN", ""),
             MOBILE_HF_TIMEOUT_SECONDS=int(os.getenv("MOBILE_HF_TIMEOUT_SECONDS", 120)),
