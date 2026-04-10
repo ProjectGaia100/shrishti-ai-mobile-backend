@@ -20,9 +20,15 @@ class PredictionOutcome:
     risk_score: float = 0.0
     confidence: float = 0.0
     disaster_type: str = "STORM"
+    disaster_types: list = None   # Full list, e.g. ["FLOOD", "STORM"]
     prediction_timestamp: str = ""
     raw: Optional[Dict[str, Any]] = None
     error: str = ""
+
+    def __post_init__(self):
+        if self.disaster_types is None:
+            self.disaster_types = []
+
 
 
 class MobileAlertSchedulerService:
@@ -141,6 +147,19 @@ class MobileAlertSchedulerService:
                         )
                     alerts_created += 1
                     per_user_stats[user_id]["alerts_created"] += 1
+
+                # Always record per-location result (clear or flagged) for the history feed.
+                if not dry_run and user_id and location_id:
+                    overall_status = "Disaster" if outcome.risk_score >= self.risk_threshold else "Normal"
+                    self._insert_location_prediction_result(
+                        prediction_run_id=run_id,
+                        location_id=location_id,
+                        user_id=user_id,
+                        overall_status=overall_status,
+                        disaster_types=outcome.disaster_types,
+                        risk_score=outcome.risk_score,
+                        run_timestamp=run_timestamp_iso,
+                    )
 
             duration = (datetime.now(timezone.utc) - started_at).total_seconds()
             self._update_prediction_run_row(
@@ -273,11 +292,15 @@ class MobileAlertSchedulerService:
         confidence = prediction.get("confidence")
 
         disaster_type = None
+        disaster_types_list: List[str] = []
         disaster_types_block = result.get("disaster_types") or {}
         if isinstance(disaster_types_block, dict):
             dt_list = disaster_types_block.get("disaster_types")
-            if isinstance(dt_list, list) and dt_list:
-                disaster_type = dt_list[0]
+            if isinstance(dt_list, list):
+                normalized = [self._normalize_disaster_type(d) for d in dt_list if d]
+                disaster_types_list = normalized
+                if normalized:
+                    disaster_type = normalized[0]
 
         try:
             parsed_risk = float(risk_score) if risk_score is not None else 0.0
@@ -297,6 +320,7 @@ class MobileAlertSchedulerService:
             risk_score=parsed_risk,
             confidence=max(0.0, min(1.0, parsed_conf)),
             disaster_type=self._normalize_disaster_type(disaster_type),
+            disaster_types=disaster_types_list,
             prediction_timestamp=datetime.now(timezone.utc).isoformat(),
             raw=result,
         )
@@ -409,6 +433,31 @@ class MobileAlertSchedulerService:
                 "prediction_timestamp": prediction_timestamp,
             }
         ).execute()
+
+    def _insert_location_prediction_result(
+        self,
+        prediction_run_id: Optional[str],
+        location_id: str,
+        user_id: str,
+        overall_status: str,
+        disaster_types: List[str],
+        risk_score: float,
+        run_timestamp: str,
+    ) -> None:
+        try:
+            self.supabase.table("location_prediction_results").insert(
+                {
+                    "prediction_run_id": prediction_run_id,
+                    "location_id": location_id,
+                    "user_id": user_id,
+                    "overall_status": overall_status,
+                    "disaster_types": disaster_types or [],
+                    "risk_score": round(float(risk_score), 4),
+                    "run_timestamp": run_timestamp,
+                }
+            ).execute()
+        except Exception as exc:
+            logger.warning("Failed to insert location_prediction_result for %s: %s", location_id, exc)
 
     def _insert_user_prediction_runs(
         self,

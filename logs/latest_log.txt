@@ -1,3 +1,120 @@
+===== Application Startup at 2026-04-10 17:25:01 =====
+
+[ENTRYPOINT] HazardGuard models not found, downloading...
+Downloading models from projectgaia/ShrishtiAI-models into /app/models ...
+Fetching 16 files:   0%|          | 0/16 [00:00<?, ?it/s]
+Fetching 16 files:   6%|▋         | 1/16 [00:00<00:11,  1.33it/s]
+Fetching 16 files:  31%|███▏      | 5/16 [00:00<00:01,  6.73it/s]
+Fetching 16 files:  44%|████▍     | 7/16 [00:01<00:01,  7.41it/s]
+Fetching 16 files: 100%|██████████| 16/16 [00:01<00:00, 13.91it/s]
+Models downloaded successfully.
+[ENTRYPOINT] Model download complete.
+[2026-04-10 17:25:26 +0000] [1] [INFO] Starting gunicorn 25.3.0
+[2026-04-10 17:25:26 +0000] [1] [INFO] Listening at: http://0.0.0.0:7860 (1)
+[2026-04-10 17:25:26 +0000] [1] [INFO] Using worker: gthread
+[2026-04-10 17:25:26 +0000] [50] [INFO] Booting worker with pid: 50
+[2026-04-10 17:25:26 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+INFO:app:HazardGuard models already present at /app/models
+INFO:app:Syncing dataset shrishtiai/shrishtiai-geospatial-data into /tmp/shrishti_mobile_data
+INFO:app:Dataset sync filters: ['final_lookup_tables/*.tif', 'state_data/**']
+/usr/local/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `snapshot_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/datasets/shrishtiai/shrishtiai-geospatial-data/revision/main "HTTP/1.1 200 OK"
+Fetching 54 files:   0%|          | 0/54 [00:00<?, ?it/s]INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/annual_precip.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/population_density.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/ndvi.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/soil_type.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/datasets/shrishtiai/shrishtiai-geospatial-data/xet-read-token/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/elevation.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/impervious_surface.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/land_cover.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/datasets/shrishtiai/shrishtiai-geospatial-data/xet-read-token/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/datasets/shrishtiai/shrishtiai-geospatial-data/xet-read-token/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/datasets/shrishtiai/shrishtiai-geospatial-data/xet-read-token/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/mean_annual_temp.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/final_lookup_tables/wind_speed.tif "HTTP/1.1 302 Found"
+Fetching 54 files:   2%|▏         | 1/54 [00:03<03:20,  3.79s/it]INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/andhrapradesh-data-download/APSAC_Police_station_boundaries.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/CZMP_2019_Goa_Hazard_Lines.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/Goa_Bhunaksha_Cadastrals.geojsonl "HTTP/1.1 302 Found"
+Fetching 54 files:   4%|▎         | 2/54 [00:06<02:46,  3.20s/it]INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/LAYER_INVENTORY.md "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/NBSS_Goa_Cadastrals.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/Onemapgoa_GA_Cadastrals.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/Onemapgoa_GA_Cadastrals_Mar2026.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/README.md "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2FREADME.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2FREADME.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-fire-trucks.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-fire-trucks.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-fire-trucks.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-local-body-boundaries.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-local-body-boundaries.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-local-body-boundaries.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-mining-leases.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-mining-leases.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-mining-leases.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-private-forests.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-private-forests.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-private-forests.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-schools.csv "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-schools.csv "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-schools.csv "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-steep-plots.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-steep-plots.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-steep-plots.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goa-water-bodies.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-water-bodies.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoa-water-bodies.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/goltim-communidade-plots.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoltim-communidade-plots.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fgoltim-communidade-plots.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/01.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/02.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/03.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/04.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/05.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/06.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/07.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/08.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/09.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/10.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/11.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/12.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/13.tif "HTTP/1.1 302 Found"
+Fetching 54 files:   6%|▌         | 3/54 [00:23<08:13,  9.68s/it]INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/14.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/15.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/16.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/gtiffs/17.tif "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/goa-data-download/mhadei-project.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fmhadei-project.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fgoa-data-download%2Fmhadei-project.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/india-data-download/LAYER_INVENTORY.md "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/india-data-download/District_Timeseries_1951-2024.csv "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2FDistrict_Timeseries_1951-2024.csv "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2FDistrict_Timeseries_1951-2024.csv "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/india-data-download/README.md "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2FREADME.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2FREADME.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/india-data-download/india-aerodrome-10km-buffer.geojson "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2Findia-aerodrome-10km-buffer.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Findia-data-download%2Findia-aerodrome-10km-buffer.geojson "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/india-data-download/LGD_Districts.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/karnataka-data-download/KGISMAPS_KN_Police_Station_Boundaries.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/kerala-data-download/LAYER_INVENTORY.md "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fkerala-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fkerala-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/kerala-data-download/NCSCM_KL_Cadastrals.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/maharashtra-data-download/LAYER_INVENTORY.md "HTTP/1.1 307 Temporary Redirect"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fmaharashtra-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: GET https://huggingface.co/api/resolve-cache/datasets/shrishtiai/shrishtiai-geospatial-data/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data%2Fmaharashtra-data-download%2FLAYER_INVENTORY.md "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/maharashtra-data-download/NCSCM_MH_Cadastrals.geojsonl "HTTP/1.1 302 Found"
+INFO:httpx:HTTP Request: HEAD https://huggingface.co/datasets/shrishtiai/shrishtiai-geospatial-data/resolve/7ff6aa9e2ed1f312931d7f7bee43a6fbbdc0a73e/state_data/tamilnadu-data-download/TNGIS_TN_Police_Station_Boundaries.geojsonl "HTTP/1.1 302 Found"
+Fetching 54 files:   7%|▋         | 4/54 [00:33<07:56,  9.52s/it]
+Fetching 54 files:  17%|█▋        | 9/54 [00:42<02:54,  3.88s/it]
+Fetching 54 files: 100%|██████████| 54/54 [00:42<00:00,  1.27it/s]
 INFO:app:Dataset raster check: RASTER_SOIL_PATH -> /tmp/shrishti_mobile_data/final_lookup_tables/soil_type.tif | exists=True | size_mb=16.8
 INFO:app:Assigned RASTER_SOIL_PATH=/tmp/shrishti_mobile_data/final_lookup_tables/soil_type.tif
 INFO:app:Dataset raster check: RASTER_ELEVATION_PATH -> /tmp/shrishti_mobile_data/final_lookup_tables/elevation.tif | exists=True | size_mb=202.4
@@ -26,7 +143,7 @@ INFO:services.hazardguard_prediction_service:HazardGuard prediction service init
 INFO:services.hazardguard_prediction_service:Initializing HazardGuard prediction service...
 INFO:models.hazardguard_prediction_model:Loading HazardGuard model components from /app/models/hazardguard/normal_vs_disaster
 INFO:models.hazardguard_prediction_model:Loading XGBoost model...
-/usr/local/lib/python3.11/pickle.py:1718: UserWarning: [16:57:55] WARNING: /__w/xgboost/xgboost/src/collective/../data/../common/error_msg.h:83: If you are loading a serialized model (like pickle in Python, RDS in R) or
+/usr/local/lib/python3.11/pickle.py:1718: UserWarning: [17:26:12] WARNING: /__w/xgboost/xgboost/src/collective/../data/../common/error_msg.h:83: If you are loading a serialized model (like pickle in Python, RDS in R) or
 configuration generated by an older version of XGBoost, please export the model by calling
 `Booster.save_model` from that version first, then load it back in current version. See:
 
@@ -61,7 +178,7 @@ INFO:models.hazardguard_prediction_model:   Model type: Normal vs Disaster Binar
 INFO:models.hazardguard_prediction_model:   Algorithm: XGBoost
 INFO:models.hazardguard_prediction_model:   CV Accuracy: 0.9729
 INFO:models.hazardguard_prediction_model:   Features: 100
-INFO:models.hazardguard_prediction_model:   Load time: 1.438s
+INFO:models.hazardguard_prediction_model:   Load time: 1.103s
 INFO:services.hazardguard_prediction_service:Loading disaster type classification models...
 INFO:models.disaster_type_classifier_model:Loading disaster type classification models...
 INFO:models.disaster_type_classifier_model:  Loading Storm classifier...
@@ -76,11 +193,11 @@ INFO:models.disaster_type_classifier_model:[SUCCESS] All 4 disaster type classif
 INFO:services.hazardguard_prediction_service:[SUCCESS] All models loaded: Combined disaster + 4 type classifiers
 INFO:services.hazardguard_prediction_service:[SUCCESS] HazardGuard service initialization successful
 INFO:app:Local HazardGuard service initialized successfully
-10.16.12.178 - - [10/Apr/2026:16:59:43 +0000] "GET /health HTTP/1.1" 200 2292 "-" "curl/8.5.0"
-INFO:httpx:HTTP Request: GET https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?select=id&status=eq.running&run_timestamp=gte.2026-04-10T14%3A59%3A44.312256%2B00%3A00&limit=1 "HTTP/2 200 OK"
+10.16.33.124 - - [10/Apr/2026:17:26:45 +0000] "GET /health HTTP/1.1" 200 2292 "-" "curl/8.5.0"
+INFO:httpx:HTTP Request: GET https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?select=id&status=eq.running&run_timestamp=gte.2026-04-10T15%3A26%3A46.085825%2B00%3A00&limit=1 "HTTP/2 200 OK"
 INFO:httpx:HTTP Request: POST https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs "HTTP/2 201 Created"
 INFO:httpx:HTTP Request: GET https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/saved_locations?select=id%2Cuser_id%2Ccity%2Ccountry%2Clat%2Clon "HTTP/2 200 OK"
-INFO:httpx:HTTP Request: PATCH https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?id=eq.99a6a564-e1ee-4e81-9731-d6615d0b99fe "HTTP/2 200 OK"
+INFO:httpx:HTTP Request: PATCH https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?id=eq.409cd4dc-7089-4242-be60-39ef62afba0c "HTTP/2 200 OK"
 INFO:services.hazardguard_prediction_service:[PREDICTION] HazardGuard prediction for location (15.272923, 73.958316)
 INFO:services.hazardguard_prediction_service:   [DATE_RANGE] Using weather data from 2026-02-03 to 2026-04-03
 INFO:services.hazardguard_prediction_service:   [WEATHER] Collecting weather data...
@@ -91,7 +208,7 @@ INFO:services.feature_engineering_service:Weather data validation passed: 17 fie
 INFO:services.feature_engineering_service:Processing feature engineering for 59 days, event duration: 1.0 days
 INFO:models.feature_engineering_model:[STATS] Loaded training global stats from /app/models/hazardguard/shared/training_global_stats.json
 INFO:models.feature_engineering_model:   precip_max=994.16, wind_max=25.32, temp_range=[-53.76, 44.18]
-INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.015s processing time
+INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.013s processing time
 INFO:services.hazardguard_prediction_service:   [RASTER] Collecting raster data...
 INFO:models.raster_data_model:Extracting all raster features for 1 coordinates
 WARNING:models.raster_data_model:Soil data not available or databases not loaded
@@ -133,7 +250,7 @@ INFO:services.weather_service:Successfully fetched weather data from NASA POWER:
 INFO:services.hazardguard_prediction_service:   [FEATURES] Engineering features...
 INFO:services.feature_engineering_service:Weather data validation passed: 17 fields, 59 days
 INFO:services.feature_engineering_service:Processing feature engineering for 59 days, event duration: 1.0 days
-INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.008s processing time
+INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.009s processing time
 INFO:services.hazardguard_prediction_service:   [RASTER] Collecting raster data...
 INFO:models.raster_data_model:Extracting all raster features for 1 coordinates
 WARNING:models.raster_data_model:Soil data not available or databases not loaded
@@ -163,7 +280,7 @@ INFO:services.weather_service:Successfully fetched weather data from NASA POWER:
 INFO:services.hazardguard_prediction_service:   [FEATURES] Engineering features...
 INFO:services.feature_engineering_service:Weather data validation passed: 17 fields, 59 days
 INFO:services.feature_engineering_service:Processing feature engineering for 59 days, event duration: 1.0 days
-INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.012s processing time
+INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.008s processing time
 INFO:services.hazardguard_prediction_service:   [RASTER] Collecting raster data...
 INFO:models.raster_data_model:Extracting all raster features for 1 coordinates
 WARNING:models.raster_data_model:Soil data not available or databases not loaded
@@ -205,7 +322,7 @@ INFO:services.weather_service:Successfully fetched weather data from NASA POWER:
 INFO:services.hazardguard_prediction_service:   [FEATURES] Engineering features...
 INFO:services.feature_engineering_service:Weather data validation passed: 17 fields, 59 days
 INFO:services.feature_engineering_service:Processing feature engineering for 59 days, event duration: 1.0 days
-INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.022s processing time
+INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.013s processing time
 INFO:services.hazardguard_prediction_service:   [RASTER] Collecting raster data...
 INFO:models.raster_data_model:Extracting all raster features for 1 coordinates
 WARNING:models.raster_data_model:Soil data not available or databases not loaded
@@ -247,7 +364,7 @@ INFO:services.weather_service:Successfully fetched weather data from NASA POWER:
 INFO:services.hazardguard_prediction_service:   [FEATURES] Engineering features...
 INFO:services.feature_engineering_service:Weather data validation passed: 17 fields, 59 days
 INFO:services.feature_engineering_service:Processing feature engineering for 59 days, event duration: 1.0 days
-INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.006s processing time
+INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.009s processing time
 INFO:services.hazardguard_prediction_service:   [RASTER] Collecting raster data...
 INFO:models.raster_data_model:Extracting all raster features for 1 coordinates
 WARNING:models.raster_data_model:Soil data not available or databases not loaded
@@ -289,7 +406,7 @@ INFO:services.weather_service:Successfully fetched weather data from NASA POWER:
 INFO:services.hazardguard_prediction_service:   [FEATURES] Engineering features...
 INFO:services.feature_engineering_service:Weather data validation passed: 17 fields, 59 days
 INFO:services.feature_engineering_service:Processing feature engineering for 59 days, event duration: 1.0 days
-INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.008s processing time
+INFO:services.feature_engineering_service:Feature engineering completed successfully: 19 features, 0.011s processing time
 INFO:services.hazardguard_prediction_service:   [RASTER] Collecting raster data...
 INFO:models.raster_data_model:Extracting all raster features for 1 coordinates
 WARNING:models.raster_data_model:Soil data not available or databases not loaded
@@ -323,8 +440,7 @@ INFO:models.disaster_type_classifier_model:[DISASTER_TYPE] Predicted disasters: 
 INFO:services.hazardguard_prediction_service:   [DISASTER_TYPES] Detected: []
 INFO:services.hazardguard_prediction_service:   [OVERRIDE] Disaster predicted but no types detected - changing to Normal
 INFO:services.hazardguard_prediction_service:   [SUCCESS] Prediction complete: Normal (disaster prob: 0.0473)
-INFO:httpx:HTTP Request: PATCH https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?id=eq.99a6a564-e1ee-4e81-9731-d6615d0b99fe "HTTP/2 200 OK"
-INFO:httpx:HTTP Request: POST https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?columns=%22total_locations%22%2C%22predictions_made%22%2C%22user_id%22%2C%22alerts_created%22%2C%22errors_count%22%2C%22status%22%2C%22duration_seconds%22%2C%22run_timestamp%22 "HTTP/2 400 Bad Request"
-WARNING:mobile_alert_scheduler_service:Skipping per-user prediction run insert: prediction_runs.user_id column is missing in Supabase schema
-10.16.12.178 - - [10/Apr/2026:16:59:59 +0000] "POST /api/scheduler/run-mobile-alerts HTTP/1.1" 200 216 "-" "curl/8.5.0"
-10.16.12.178 - - [10/Apr/2026:17:09:18 +0000] "GET / HTTP/1.1" 200 204 "-" "HuggingFace (production)"
+INFO:httpx:HTTP Request: PATCH https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?id=eq.409cd4dc-7089-4242-be60-39ef62afba0c "HTTP/2 200 OK"
+INFO:httpx:HTTP Request: POST https://cvmanjacycedxdqyvypr.supabase.co/rest/v1/prediction_runs?columns=%22user_id%22%2C%22total_locations%22%2C%22status%22%2C%22predictions_made%22%2C%22run_timestamp%22%2C%22errors_count%22%2C%22duration_seconds%22%2C%22alerts_created%22 "HTTP/2 201 Created"
+10.16.33.124 - - [10/Apr/2026:17:27:02 +0000] "POST /api/scheduler/run-mobile-alerts HTTP/1.1" 200 216 "-" "curl/8.5.0"
+ 
