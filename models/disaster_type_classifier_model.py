@@ -28,6 +28,16 @@ logger = logging.getLogger(__name__)
 
 class DisasterTypeClassifierModel:
     """Model for classifying specific disaster types after disaster is detected"""
+
+    # Per-disaster-type thresholds for classification.
+    # Storm/Drought use stricter thresholds to reduce false positives.
+    DISASTER_TYPE_THRESHOLDS = {
+        'Storm': 0.92,
+        'Drought': 0.92,
+        'Flood': 0.70,
+        'Landslide': 0.70,
+    }
+    DEFAULT_THRESHOLD = 0.70
     
     def __init__(self):
         """Initialize disaster type classifier"""
@@ -291,11 +301,18 @@ class DisasterTypeClassifierModel:
                     
                     # Get probability for disaster class (index 1 typically)
                     disaster_prob = proba[1] if len(proba) > 1 else proba[0]
+
+                    # Apply custom threshold instead of the model's default 0.5.
+                    threshold = self.DISASTER_TYPE_THRESHOLDS.get(disaster_type, self.DEFAULT_THRESHOLD)
+                    prediction_with_threshold = 1 if disaster_prob >= threshold else 0
                     
-                    predictions[disaster_type] = prediction
+                    predictions[disaster_type] = prediction_with_threshold
                     probabilities[disaster_type] = float(disaster_prob)
                     
-                    logger.info(f"  [{disaster_type}] Prediction={prediction}, Probability={disaster_prob:.4f}")
+                    logger.info(
+                        f"  [{disaster_type}] RawPred={prediction}, Prob={disaster_prob:.4f}, "
+                        f"Threshold={threshold}, FinalPred={prediction_with_threshold}"
+                    )
                     
                 except Exception as model_error:
                     logger.error(f"Error predicting {disaster_type}: {model_error}")

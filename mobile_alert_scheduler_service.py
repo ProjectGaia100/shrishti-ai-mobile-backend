@@ -433,7 +433,27 @@ class MobileAlertSchedulerService:
             )
 
         if rows:
-            self.supabase.table("prediction_runs").insert(rows).execute()
+            try:
+                self.supabase.table("prediction_runs").insert(rows).execute()
+            except Exception as exc:
+                # Keep scheduler resilient when optional per-user analytics columns
+                # are not present in the deployed schema.
+                exc_text = str(exc)
+                missing_user_col = (
+                    "prediction_runs" in exc_text
+                    and "user_id" in exc_text
+                    and "PGRST204" in exc_text
+                )
+                if missing_user_col:
+                    logger.warning(
+                        "Skipping per-user prediction run insert: prediction_runs.user_id column is missing in Supabase schema"
+                    )
+                    return
+
+                logger.warning(
+                    "Skipping per-user prediction run insert due to non-fatal error: %s",
+                    exc,
+                )
 
     def _create_prediction_run_row(self) -> str:
         response = (

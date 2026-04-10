@@ -482,6 +482,18 @@ class HazardGuardPredictionService:
                         reference_date=reference_date or start_date
                     )
                     logger.info(f"   [DISASTER_TYPES] Detected: {disaster_types_result['disaster_types']}")
+
+                    # Keep behavior consistent with main backend: if no specific
+                    # disaster type passes threshold, downgrade to Normal.
+                    if not disaster_types_result.get('disaster_types'):
+                        logger.info("   [OVERRIDE] Disaster predicted but no types detected - changing to Normal")
+                        prediction_result['prediction'] = 'Normal'
+                        old_disaster_prob = prediction_result['probability']['disaster']
+                        old_normal_prob = prediction_result['probability']['normal']
+                        prediction_result['probability']['disaster'] = old_normal_prob
+                        prediction_result['probability']['normal'] = old_disaster_prob
+                        prediction_result['confidence'] = abs(old_normal_prob - old_disaster_prob)
+                        prediction_result['override_reason'] = 'No specific disaster types detected above threshold'
                 except Exception as type_error:
                     logger.error(f"   [DISASTER_TYPE_ERROR] Failed to classify disaster types: {type_error}")
                     disaster_types_result = {
@@ -490,6 +502,11 @@ class HazardGuardPredictionService:
                         'confidence': 'unknown',
                         'error': str(type_error)
                     }
+
+                    # If disaster type classification fails, default to Normal.
+                    logger.info("   [OVERRIDE] Disaster type classification failed - defaulting to Normal")
+                    prediction_result['prediction'] = 'Normal'
+                    prediction_result['override_reason'] = 'Disaster type classification failed'
             
             # Calculate total processing time
             processing_time = (datetime.now() - start_time).total_seconds()
