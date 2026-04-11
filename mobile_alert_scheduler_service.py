@@ -122,18 +122,41 @@ class MobileAlertSchedulerService:
                             per_user_stats[user_id]["errors_count"] += 1
                         continue
 
-                    if outcome.risk_score < self.risk_threshold:
-                        continue
-
-                    location_id = location.get("id")
-                    disaster_type = self._normalize_disaster_type(outcome.disaster_type)
+                    location_id = location.get("id")  # always assign before any branching
                     if not user_id or not location_id:
                         errors_count += 1
-                        if user_id:
-                            per_user_stats[user_id]["errors_count"] += 1
                         continue
 
+                    overall_status = "Disaster" if outcome.risk_score >= self.risk_threshold else "Normal"
+
+                    if outcome.risk_score < self.risk_threshold:
+                        # Below threshold — still record the Normal result for the history feed.
+                        if not dry_run:
+                            self._insert_location_prediction_result(
+                                prediction_run_id=run_id,
+                                location_id=location_id,
+                                user_id=user_id,
+                                overall_status="Normal",
+                                disaster_types=outcome.disaster_types,
+                                risk_score=outcome.risk_score,
+                                run_timestamp=run_timestamp_iso,
+                            )
+                        continue
+
+                    disaster_type = self._normalize_disaster_type(outcome.disaster_type)
+
                     if self._alert_exists_recently(user_id, location_id, disaster_type):
+                        # Duplicate suppressed — still record for the history feed.
+                        if not dry_run:
+                            self._insert_location_prediction_result(
+                                prediction_run_id=run_id,
+                                location_id=location_id,
+                                user_id=user_id,
+                                overall_status="Disaster",
+                                disaster_types=outcome.disaster_types,
+                                risk_score=outcome.risk_score,
+                                run_timestamp=run_timestamp_iso,
+                            )
                         continue
 
                     if not dry_run:
@@ -145,21 +168,17 @@ class MobileAlertSchedulerService:
                             confidence=outcome.confidence,
                             prediction_timestamp=outcome.prediction_timestamp,
                         )
+                        self._insert_location_prediction_result(
+                            prediction_run_id=run_id,
+                            location_id=location_id,
+                            user_id=user_id,
+                            overall_status="Disaster",
+                            disaster_types=outcome.disaster_types,
+                            risk_score=outcome.risk_score,
+                            run_timestamp=run_timestamp_iso,
+                        )
                     alerts_created += 1
                     per_user_stats[user_id]["alerts_created"] += 1
-
-                # Always record per-location result (clear or flagged) for the history feed.
-                if not dry_run and user_id and location_id:
-                    overall_status = "Disaster" if outcome.risk_score >= self.risk_threshold else "Normal"
-                    self._insert_location_prediction_result(
-                        prediction_run_id=run_id,
-                        location_id=location_id,
-                        user_id=user_id,
-                        overall_status=overall_status,
-                        disaster_types=outcome.disaster_types,
-                        risk_score=outcome.risk_score,
-                        run_timestamp=run_timestamp_iso,
-                    )
 
             duration = (datetime.now(timezone.utc) - started_at).total_seconds()
             self._update_prediction_run_row(
